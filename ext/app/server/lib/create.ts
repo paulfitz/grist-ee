@@ -1,5 +1,6 @@
 import { Activation } from 'app/gen-server/lib/Activation';
 import { configureSendGridNotifier } from 'app/gen-server/lib/configureSendGridNotifier';
+import { configureTestNotifier } from 'app/gen-server/lib/configureTestNotifier';
 import { checkAzureExternalStorage, configureAzureExternalStorage } from 'app/server/lib/configureAzureExternalStorage';
 import { configureEnterpriseAuditLogger } from 'app/server/lib/configureEnterpriseAuditLogger';
 import { checkMinIOExternalStorage, configureMinIOExternalStorage } from 'app/server/lib/configureMinIOExternalStorage';
@@ -40,7 +41,9 @@ class EnterpriseCreate extends BaseCreate {
     return new Activation(dbManager, gristServer);
   }
   public override Notifier(dbManager: HomeDBManager, gristServer: GristServer): INotifier {
-    return configureSendGridNotifier(dbManager, gristServer) || EmptyNotifier;
+    return configureTestNotifier(dbManager, gristServer) ||
+        configureSendGridNotifier(dbManager, gristServer) ||
+        EmptyNotifier;
   }
   public override AuditLogger(dbManager: HomeDBManager, gristServer: GristServer) {
     return configureEnterpriseAuditLogger(dbManager, gristServer);
